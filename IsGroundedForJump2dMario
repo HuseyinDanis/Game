@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ZeminTrigger : MonoBehaviour {
+    PlayerController kr;
+	// Use this for initialization
+	void Start () {
+        kr = transform.root.gameObject.GetComponent<PlayerController>();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+     
+
+    }
+   
+
+
+
+
+
+    void OnTriggerEnter2D()
+    {
+        kr.yerdemi = true;
+    }
+    void OnTriggerStay2D()
+    {
+        kr.yerdemi = true;
+    }
+    void OnTriggerExit2D()
+    {
+        kr.yerdemi = false;
+    }
+
+
+}
