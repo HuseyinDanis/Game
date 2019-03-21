@@ -1,0 +1,371 @@
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+public class PlayerController : MonoBehaviour
+{
+    public float moveSpeed;
+    public float jumpHeight;
+    public GameObject Redcap;
+    public GameObject GreenCap;
+    public GameObject BlueCap;
+    public bool yerdemi;
+    
+
+
+    public GameObject Redcap1;
+    public GameObject GreenCap1;
+    public GameObject BlueCap1;
+
+    public int capcontrol;
+
+    public float startPosition;
+    public float endPosition;
+
+    public int deadcounter;
+
+    public int currentcap;
+
+    public int score;
+
+    private bool canControl = true;
+
+    public Text scoreText;
+    public GameObject sonuc;
+
+public Image kirmizig;
+
+public Image yesilg;
+
+public Image mavig;
+
+public AudioClip outro;
+public AudioClip loop;
+    public Animator anim;
+
+    public Transform Spawnpoint;
+    public GameObject Prefab;
+
+    public Transform SpawnRedCap;
+    public GameObject RedCapDusme;
+
+    public Transform SpawnBlueCap;
+    public GameObject BlueCapDusme;
+
+    public Transform SpawnGreenCap;
+    public GameObject GreenCapDusme;
+
+
+
+    // Use this for initialization
+    void Start()
+
+    {
+        
+        anim = GetComponent<Animator>();
+
+        
+
+
+
+
+        AudioSource.PlayClipAtPoint(loop,transform.position, 0.25f);
+    
+
+        deadcounter = 0;
+        startPosition = transform.position.x;
+        capcontrol = 2;
+        BlueCap.SetActive(false);
+        GreenCap.SetActive(false);
+        Redcap.SetActive(true);
+
+
+    }
+    void fixedUpdate()
+    {
+        
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        //++++++++++++++++++++++
+        //Hareket
+        //++++++++++++++++++++++
+        if (canControl)
+        {
+            if (Input.GetKeyDown(KeyCode.W) && yerdemi)
+            {
+                GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, jumpHeight);
+
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+
+                GetComponent<Rigidbody2D>().velocity = new Vector2(moveSpeed, GetComponent<Rigidbody2D>().velocity.y);
+
+
+
+                
+
+                anim.Play("Hareket");
+            }
+            
+            
+            else
+            {
+                anim.Play("Dur");
+                
+            }
+           
+
+
+           
+        }
+        ///++++++++++++++++++
+        /// Şapka Değişimleri
+        /// +++++++++++++++++
+        if (BlueCap != null)
+        {
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                capcontrol = 0;
+                if (Redcap != false)
+                {
+                    Redcap.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("L bastın ama kırmızı imha edildi");
+                }
+                if (GreenCap != false)
+                {
+                    GreenCap.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("L bastın ama yeşil imha edildi");
+                }
+                BlueCap.SetActive(true);
+
+
+            }
+        
+        }
+        else
+        {
+            Debug.Log("Mavi şapka imha edildi ,ulaşamazsın");
+        }
+        //     
+        if (Redcap != null)
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                capcontrol = 2;
+                if (BlueCap != null)
+                {
+                    BlueCap.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("K bastın ama mavi yok");
+                }
+                if (GreenCap != null)
+                {
+                    GreenCap.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("K bastın ama yeşil yok");
+                }
+
+                Redcap.SetActive(true);
+
+            }
+            
+        }
+        else
+        {
+            Debug.Log("Kırmızı şapka imha edildi ,ulaşamazsın");
+
+        }
+        if (GreenCap != null)
+        {
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                capcontrol = 1;
+                if (BlueCap != null)
+                {
+                    BlueCap.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("L bastın ama mavi imha edildi ");
+                }
+                if (Redcap != null)
+                {
+                    Redcap.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("L bastın ama yeşil imha edildi ");
+                }
+
+
+                GreenCap.SetActive(true);
+            }
+            
+        }
+        else
+        {
+            Debug.Log("Yeşil şapka imha edildi ,ulaşamazsın");
+
+        }
+    }
+
+
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Red" && capcontrol == 2)
+        { Debug.Log("Kırmızı şapkayla kırmızı konteynera değdi"); }
+        if (coll.gameObject.tag == "Blue" && capcontrol == 2)
+        {
+            if (Redcap != null)
+            {
+                Destroy(Redcap);
+                kirmizig.color = new Color(kirmizig.color.r, kirmizig.color.g, kirmizig.color.b, 0.25f);
+                deadcounter++;
+                if (BlueCap != null)
+                BlueCap.SetActive(true);
+                capcontrol = 0;
+
+
+                Instantiate(RedCapDusme, SpawnRedCap.position, SpawnRedCap.rotation);
+                Debug.Log("Kırmızı şapka destroy edildi");
+                Debug.Log("Kırmızı şapka ile mavi konteynera bastı");
+            }
+        }
+        if (coll.gameObject.tag == "Green" && capcontrol == 2)
+        {
+            if (Redcap != null)
+            {
+                Destroy(Redcap);
+                kirmizig.color = new Color(kirmizig.color.r, kirmizig.color.g, kirmizig.color.b, 0.25f);
+                deadcounter++;
+                if (GreenCap != null)
+                GreenCap.SetActive(true);
+                capcontrol =1;
+
+                Instantiate(RedCapDusme, SpawnRedCap.position, SpawnRedCap.rotation);
+                Debug.Log("Kırmızı şapka destroy edildi");
+                Debug.Log("Kırmızı şapka ile yeşil konteynera bastı");
+            }
+        }
+
+        //Mavi Şapka için
+
+        if (coll.gameObject.tag == "Green" && capcontrol == 1)
+        { Debug.Log("Yeşil şapkayla yeşil konteynera değdi"); }
+        if (coll.gameObject.tag == "Red" && capcontrol == 1)
+        {
+            if (GreenCap != null)
+            {
+                Destroy(GreenCap);
+                yesilg.color = new Color(yesilg.color.r, yesilg.color.g, yesilg.color.b, 0.15f);
+                deadcounter++;
+                if (Redcap != null)
+                Redcap.SetActive(true);
+                capcontrol=2;
+                Instantiate(GreenCapDusme, SpawnGreenCap.position, SpawnGreenCap.rotation);
+
+                Debug.Log("Yeşil şapka destroy edildi");
+                Debug.Log("Yeşil şapka ile kırmızı konteynera bastı");
+            }
+        }
+        if (coll.gameObject.tag == "Blue" && capcontrol == 1)
+        {
+            if (GreenCap != null)
+            {
+                Destroy(GreenCap);
+                yesilg.color = new Color(yesilg.color.r, yesilg.color.g, yesilg.color.b, 0.15f);
+                deadcounter++;
+                if (BlueCap != null)
+                BlueCap.SetActive(true);
+                capcontrol =0;
+
+                Instantiate(GreenCapDusme, SpawnGreenCap.position, SpawnGreenCap.rotation);
+
+                Debug.Log("Yeşil şapka destroy edildi");
+                Debug.Log("Yeşil şapka ile mavi konteynera bastı");
+            }
+        }
+
+        if (coll.gameObject.tag == "Blue" && capcontrol == 0)
+        { Debug.Log("Mavi şapka ile mavi konteynera değdi"); }
+        if (coll.gameObject.tag == "Red" && capcontrol == 0)
+        {
+
+            if (BlueCap != null)
+            {
+                Destroy(BlueCap);
+                deadcounter++;
+                mavig.color = new Color(mavig.color.r, mavig.color.g, mavig.color.b, 0.15f);
+                if (Redcap != null)
+                Redcap.SetActive(true);
+                capcontrol =2;
+
+                Instantiate(BlueCapDusme, SpawnBlueCap.position, SpawnBlueCap.rotation);
+                Debug.Log("Mavi şapka destroy edildi");
+                Debug.Log("Mavi şapka ile kırmızı konteynera bastı");
+            }
+        }
+        if (coll.gameObject.tag == "Green" && capcontrol == 0)
+        {
+
+            if (BlueCap != null)
+            {
+                Destroy(BlueCap);
+                deadcounter++;
+                mavig.color = new Color(mavig.color.r, mavig.color.g, mavig.color.b, 0.15f);
+                if (GreenCap != null)
+                GreenCap.SetActive(true);
+                capcontrol=1;
+                Instantiate(BlueCapDusme, SpawnBlueCap.position, SpawnBlueCap.rotation);
+                Debug.Log("Mavi şapka destroy edildi");
+                Debug.Log("Mavi şapka ile yeşil konteynera bastı");
+            }
+        }
+
+
+        if (deadcounter == 3)
+        {
+            sonuc.SetActive(true);
+            endPosition = transform.position.x;
+            score = (int)(endPosition - startPosition);
+            scoreText.text = score.ToString();
+            canControl = false;
+            
+            AudioSource.PlayClipAtPoint(outro,transform.position, 0.25f);
+            Debug.Log("Oyun Bitti");
+            gameObject.SetActive(true);
+            Instantiate(Prefab, Spawnpoint.position, Spawnpoint.rotation);
+            
+            
+
+        }
+
+
+
+
+    }
+          
+
+
+
+    /*void capcontroller ()
+    {
+        if()
+        Destroy(BlueCap);
+
+    }
+    */
+}
